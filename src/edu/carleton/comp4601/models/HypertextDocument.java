@@ -69,7 +69,7 @@ public final class HypertextDocument extends WebDocument {
 
 	@Override
 	public String getContent() {
-		return String.join(" ", paragraphs);
+		return String.join(" ", paragraphs).substring(0, 200);
 	}
 
 	// FIELD NAMES

@@ -24,7 +24,7 @@ final class CrawlerController {
 		RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
 		CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
-		controller.addSeed("https://sikaman.dyndns.org:8443/WebSite/rest/site/courses/4601/assignments/training/graph");
+		controller.addSeed("https://sikaman.dyndns.org:8443/WebSite/rest/site/courses/4601/assignments/training/pages");
 
 		System.out.println("NOTICE: Loading graph data into memory from database.");
 		dataCoordinator.loadPersistedData();
@@ -44,7 +44,7 @@ final class CrawlerController {
 		config.setIncludeHttpsPages(true);
 		config.setIncludeBinaryContentInCrawling(true);
 		config.setMaxDownloadSize(1_000_000_000);
-		config.setResumableCrawling(true);
+		config.setResumableCrawling(false);
 
 		config.setMaxPagesToFetch(100_000);
 
