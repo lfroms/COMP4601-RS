@@ -2,6 +2,7 @@ package edu.carleton.comp4601.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,7 +52,9 @@ public final class HypertextDocument extends WebDocument {
 	private static List<String> getParagraphsFromDocument(Document document) {
 		Elements paragraphElements = document.select("p");
 
-		return paragraphElements.eachText();
+		// Trimming content length to 100.
+		return paragraphElements.eachText().stream()
+				.map(paragraph -> paragraph.substring(0, Math.min(100, paragraph.length()))).collect(Collectors.toList());
 	}
 
 	private static List<String> parseJSONStringArray(JSONObject object, String fieldName) {
@@ -69,7 +72,7 @@ public final class HypertextDocument extends WebDocument {
 
 	@Override
 	public String getContent() {
-		return String.join(" ", paragraphs).substring(0, 200);
+		return String.join(" ", paragraphs);
 	}
 
 	// FIELD NAMES
