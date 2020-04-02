@@ -6,7 +6,6 @@ public final class HTMLFrameGenerator {
 		
 		output += "<html>";
 		output += "<head>";
-		output += "<link rel=\"stylesheet\" type=\"text/css\" href=\"https://www.w3schools.com/w3css/4/w3.css\" />";
 		output += "<title>";
 		
 		output += title;
@@ -14,7 +13,7 @@ public final class HTMLFrameGenerator {
 		output += "</title>";
 		output += "</head>";
 		
-		output += "<body class=\"w3-container\">";
+		output += "<body>";
 		
 		output += htmlContent;
 		

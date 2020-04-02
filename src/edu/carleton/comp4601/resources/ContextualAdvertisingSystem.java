@@ -6,10 +6,17 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import edu.carleton.comp4601.analyzers.SentimentPostprocessor;
+import edu.carleton.comp4601.crawler.CrawlerController;
+import edu.carleton.comp4601.models.UserDocument;
+import edu.carleton.comp4601.store.DataCoordinator;
+import edu.carleton.comp4601.utility.HTMLFrameGenerator;
+
 @Path("/rs")
 public class ContextualAdvertisingSystem {
+	private static final String NAME = "Lukas Romsicki & Britta Evans-Fenton";
 	
-	private static final String NAME = "tony white";
+	private static final DataCoordinator dataCoordinator = DataCoordinator.getInstance();
 	
 	@GET
 	public String nameOfSystem() {
@@ -20,14 +27,46 @@ public class ContextualAdvertisingSystem {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public String crawlProcessor() {
-		return "crawl";
+		CrawlerController controller = new CrawlerController();
+		try {
+			controller.crawlData();
+		} catch (Exception e) {
+			System.err.println("ERROR: An error occurred while crawling the data.");
+			e.printStackTrace();
+			
+			return "An error occurred while crawling. See console stacktrace.";
+		}
+		
+		return "Crawl completed.";
 	}
 	
 	@Path("context")
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public String contextProcessor() {
-		return "Return a table as per requirement 7 of assignment 2";
+		SentimentPostprocessor sentimentPostprocessor = new SentimentPostprocessor();
+		sentimentPostprocessor.run();
+		
+		String output = "";
+		output += "<table>";
+		output += "<tr>";
+		output += "<th>Name</th><th># of reviews</th>";
+		output += "</tr>";
+		
+		for (UserDocument user : dataCoordinator.getAllUsers()) {
+			output += "<tr>";
+			output += "<td>";
+			output += user.getId();
+			output += "</td>";
+			output += "<td>";
+			output += user.getPageIds().toArray().length;
+			output += "</td>";
+			output += "</tr>";
+		}
+		
+		output += "</table>";
+		
+		return HTMLFrameGenerator.wrapInHTMLFrame("Context", output);
 	}
 	
 	@Path("community")

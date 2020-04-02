@@ -52,5 +52,7 @@ dependencies {
     compile group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '2.30'
     compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet', version: '2.30'
     compile group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: '2.30'
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+    compile group: 'javax.activation', name: 'activation', version: '1.1.1'
     providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 }

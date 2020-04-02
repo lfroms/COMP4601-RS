@@ -71,11 +71,11 @@ final class Crawler extends WebCrawler {
 	}
 	
 	private Boolean isUser(Page page) {
-		return page.getWebURL().getURL().contains("users");
+		return page.getWebURL().getURL().contains("users") && page.getWebURL().getURL().contains(".html");
 	}
 	
 	private Boolean isPage(Page page) {
-		return page.getWebURL().getURL().contains("pages");
+		return page.getWebURL().getURL().contains("pages") && page.getWebURL().getURL().contains(".html");
 	}
 	
 	private Boolean stringStartsWithSupportedPrefix(String input) {

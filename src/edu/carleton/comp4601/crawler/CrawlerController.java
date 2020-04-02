@@ -9,14 +9,16 @@ import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
-final class CrawlerController {
+public final class CrawlerController {
 	private static final int NUM_CRAWLERS = 7;
 	private static final String STORAGE_PATH = new File(System.getProperty("user.home"), "/Desktop/crawler.nosync")
 			.toString();
 	
 	private static DataCoordinator dataCoordinator = DataCoordinator.getInstance();
+	
+	public CrawlerController() {}
 
-	public static void main(String[] args) throws Exception {
+	public void crawlData() throws Exception {
 		dataCoordinator.reset();
 		
 		CrawlConfig config = getCrawlConfig();
