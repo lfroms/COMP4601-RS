@@ -6,7 +6,7 @@ import edu.carleton.comp4601.models.PageDocument;
 import edu.carleton.comp4601.store.DataCoordinator;
 
 public final class GenrePreprocessor {
-	private static final String[] GENRES = { "comedy", "drama", "action", "adventure", "documentary", "romance", "thriller", "horror" };
+	public static final String[] GENRES = { "comedy", "drama", "action", "adventure", "documentary", "romance", "thriller", "horror" };
 	private static final DataCoordinator dataCoordinator = DataCoordinator.getInstance();
 	
 	public void run() {
