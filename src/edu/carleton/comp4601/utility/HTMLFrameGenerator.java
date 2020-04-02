@@ -1,4 +1,4 @@
-package edu.carleton.comp4601.helpers;
+package edu.carleton.comp4601.utility;
 
 public final class HTMLFrameGenerator {
 	public static String wrapInHTMLFrame(String title, String htmlContent) {

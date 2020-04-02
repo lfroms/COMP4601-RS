@@ -1,4 +1,4 @@
-package edu.carleton.comp4601.helpers;
+package edu.carleton.comp4601.utility;
 
 import org.apache.commons.codec.binary.Base64;
 

@@ -2,10 +2,10 @@ package edu.carleton.comp4601.store.mongo;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.json.JSONObject;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
@@ -17,20 +17,17 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 
 import edu.carleton.comp4601.models.Identifiable;
-import edu.carleton.comp4601.store.DocumentMapper;
-import edu.carleton.comp4601.store.MappableProvider;
+import edu.carleton.comp4601.models.JSONSerializable;
 import edu.carleton.comp4601.store.Storable;
 
-public final class MongoProvider<DocumentType extends Identifiable> extends MappableProvider<DocumentType, Document> implements Storable<DocumentType> {
+public final class MongoProvider<DocumentType extends Identifiable & JSONSerializable> implements Storable<DocumentType> {
 	private final MongoClient mongoClient;
 	private final MongoDatabase db;
 	private final MongoCollection<Document> collection;
 
 	private static final String SYSTEM_ID_FIELD = "_id";
 	
-	public MongoProvider(Supplier<? extends DocumentMapper<DocumentType, Document>> mapperConstructor, MongoDBConfig config) {
-		super(mapperConstructor);
-	
+	public MongoProvider(MongoDBConfig config) {	
 		this.mongoClient = new MongoClient(config.getHostname(), config.getPort());
 		this.db = mongoClient.getDatabase(config.getDatabaseName());
 		this.collection = db.getCollection(config.getCollectionName());
@@ -40,11 +37,11 @@ public final class MongoProvider<DocumentType extends Identifiable> extends Mapp
 		Bson filter = Filters.eq(SYSTEM_ID_FIELD, document.getId());
 		ReplaceOptions options = new ReplaceOptions().upsert(true);
 
-		Document documentToSave = mapperConstructor.get().serialize(document);
+		Document documentToSave = Document.parse(document.toJSON().toString());
 		collection.replaceOne(filter, documentToSave, options);
 	}
 
-	public final Optional<DocumentType> find(Integer documentId) {
+	public final Optional<DocumentType> find(String documentId, Class<DocumentType> clazz) {
 		FindIterable<Document> cursor = collection.find(new BasicDBObject(SYSTEM_ID_FIELD, documentId));
 		MongoCursor<Document> c = cursor.iterator();
 
@@ -55,7 +52,7 @@ public final class MongoProvider<DocumentType extends Identifiable> extends Mapp
 		Document document = c.next();
 
 		try {
-			return Optional.of(mapperConstructor.get().deserialize(document));
+			return Optional.of(clazz.getDeclaredConstructor(JSONObject.class).newInstance(new JSONObject(document.toJson())));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -63,7 +60,7 @@ public final class MongoProvider<DocumentType extends Identifiable> extends Mapp
 		}
 	}
 	
-	public final ArrayList<DocumentType> getAll() {
+	public final ArrayList<DocumentType> getAll(Class<DocumentType> clazz) {
 		ArrayList<DocumentType> output = new ArrayList<>();
 		
 		FindIterable<Document> cursor = collection.find();
@@ -73,7 +70,7 @@ public final class MongoProvider<DocumentType extends Identifiable> extends Mapp
 			Document obj = c.next();
 			
 			try {
-				output.add(mapperConstructor.get().deserialize(obj));
+				output.add(clazz.getDeclaredConstructor(JSONObject.class).newInstance(new JSONObject(obj.toJson())));
 			} catch (Exception e) {
 				System.err.println("Could not deserialize document with id " + obj.getInteger(SYSTEM_ID_FIELD) + ". Skipping...");
 				e.printStackTrace();
@@ -84,7 +81,7 @@ public final class MongoProvider<DocumentType extends Identifiable> extends Mapp
 	}
 
 	@Override
-	public void delete(Integer id) {
+	public void delete(String id) {
 		Bson filter = Filters.eq(SYSTEM_ID_FIELD, id);
 		collection.deleteOne(filter);
 	}

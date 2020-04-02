@@ -2,7 +2,8 @@ package edu.carleton.comp4601.crawler;
 
 import java.util.regex.Pattern;
 
-import edu.carleton.comp4601.models.HypertextDocument;
+import edu.carleton.comp4601.models.PageDocument;
+import edu.carleton.comp4601.models.UserDocument;
 import edu.carleton.comp4601.models.WebDocument;
 import edu.carleton.comp4601.store.DataCoordinator;
 import edu.uci.ics.crawler4j.crawler.Page;
@@ -13,7 +14,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 final class Crawler extends WebCrawler {
 	private final static DataCoordinator dataCoordinator = DataCoordinator.getInstance();
 
-	private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|mp3|mp4|zip|gz|oembed|))$");
+	private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg" + "|png|mp3|mp4|zip|gz))$");
 
 	private final String[] supportedUrls = { "https://sikaman.dyndns.org" };
 
@@ -26,22 +27,58 @@ final class Crawler extends WebCrawler {
 
 	@Override
 	public void visit(Page page) {
+		String path = page.getWebURL().getPath();
+		String name = path.substring(path.lastIndexOf('/') + 1);
+		
+		if (isUser(page)) {
+			System.out.println("NOTICE: Saving user \"" + name + "\"");
+			handleUser(page);
+
+		} else if (isPage(page)) {
+			System.out.println("NOTICE: Saving page \"" + name + "\"");
+			handlePage(page);
+
+		} else {
+			System.err.println("WARNING: Could not classify \"" + name + "\". Skipping...");
+		}
+	}
+
+	// PRIVATE HELPERS ==================================================================
+
+	private void handlePage(Page page) {
 		HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 
 		if (htmlParseData instanceof HtmlParseData == false) {
 			return;
 		}
-
+		
 		WebURL webUrl = page.getWebURL();
-
-		WebDocument vertex = new HypertextDocument(webUrl.getDocid(), webUrl, htmlParseData.getHtml());
-
-		dataCoordinator.upsert(vertex);
+		WebDocument pageDocument = new PageDocument(webUrl.getDocid(), webUrl, htmlParseData.getHtml());
+		
+		dataCoordinator.upsert(pageDocument);
 	}
+	
+	private void handleUser(Page page) {
+		HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 
-	// PRIVATE HELPERS
-	// ==================================================================
-
+		if (htmlParseData instanceof HtmlParseData == false) {
+			return;
+		}
+		
+		WebURL webUrl = page.getWebURL();
+		WebDocument pageDocument = new UserDocument(webUrl.getDocid(), webUrl, htmlParseData.getHtml());
+		
+		dataCoordinator.upsert(pageDocument);
+	}
+	
+	private Boolean isUser(Page page) {
+		return page.getWebURL().getURL().contains("users");
+	}
+	
+	private Boolean isPage(Page page) {
+		return page.getWebURL().getURL().contains("pages");
+	}
+	
 	private Boolean stringStartsWithSupportedPrefix(String input) {
 		boolean result = false;
 

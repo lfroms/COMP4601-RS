@@ -17,13 +17,13 @@ public interface Storable<DataType extends Identifiable> {
 	 * @param id
 	 * @return The object.
 	 */
-	public Optional<DataType> find(Integer id);
+	public Optional<DataType> find(String id, Class<DataType> clazz);
 	
 	/**
 	 * 
 	 * @param id
 	 */
-	public void delete(Integer id);
+	public void delete(String id);
 	
 	/**
 	 * Resets all data.

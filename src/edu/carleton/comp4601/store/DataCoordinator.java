@@ -1,20 +1,13 @@
 package edu.carleton.comp4601.store;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
-import org.jgrapht.io.ExportException;
-
-import edu.carleton.comp4601.models.SaveableGraph;
-import edu.carleton.comp4601.models.WebDocument;
-import edu.carleton.comp4601.store.graph.GraphMapper;
-import edu.carleton.comp4601.store.graph.GraphProvider;
-import edu.carleton.comp4601.store.mongo.GraphMongoMapper;
+import edu.carleton.comp4601.models.PageDocument;
+import edu.carleton.comp4601.models.UserDocument;
 import edu.carleton.comp4601.store.mongo.MongoDBConfig;
 import edu.carleton.comp4601.store.mongo.MongoProvider;
-import edu.carleton.comp4601.store.mongo.WebDocumentMongoMapper;
 
-public final class DataCoordinator implements Storable<WebDocument> {
+public final class DataCoordinator {
 	private static DataCoordinator singleInstance = null;
 
 	public static DataCoordinator getInstance() {
@@ -25,101 +18,53 @@ public final class DataCoordinator implements Storable<WebDocument> {
 		return singleInstance;
 	}
 
-	// CONSTANTS
-	// ========================================================================
+	// STORABLE INSTANCES ===============================================================
 
-	private static final Integer GRAPH_DB_ID = 1;
+	private static MongoProvider<PageDocument> pagesDatabase =
+			new MongoProvider<>(getPagesDatabaseConfiguration());
+	
+	private static MongoProvider<UserDocument> usersDatabase =
+			new MongoProvider<>(getUsersDatabaseConfiguration());
 
-	// STORABLE INSTANCES
-	// ===============================================================
 
-	private static MongoProvider<WebDocument> documentsDatabase = new MongoProvider<>(WebDocumentMongoMapper::new,
-			getDocumentsDatabaseConfig());
+	// PUBLIC INTERFACE =================================================================
 
-	private static Storable<SaveableGraph> graphsDatabase = new MongoProvider<>(GraphMongoMapper::new,
-			getGraphsDatabaseConfig());
-
-	private static GraphProvider<WebDocument> graphProvider = new GraphProvider<>(GraphMapper::new);
-
-	// PUBLIC INTERFACE
-	// =================================================================
-
-	@Override
-	public void upsert(WebDocument input) {
-		graphProvider.upsert(input);
-		documentsDatabase.upsert(input);
+	public void upsert(UserDocument user) {
+		usersDatabase.upsert(user);
+	}
+	
+	public void upsert(PageDocument page) {
+		pagesDatabase.upsert(page);
 	}
 
-	@Override
-	public Optional<WebDocument> find(Integer id) {
-		return documentsDatabase.find(id);
+	public Optional<PageDocument> findPage(String id) {
+		return pagesDatabase.find(id, PageDocument.class);
+	}
+	
+	public Optional<UserDocument> findUser(String id) {
+		return usersDatabase.find(id, UserDocument.class);
 	}
 
-	public ArrayList<WebDocument> getAll() {
-		return documentsDatabase.getAll();
+	public void deletePage(String id) {
+		pagesDatabase.delete(id);
+	}
+	
+	public void deleteUser(String id) {
+		usersDatabase.delete(id);
 	}
 
-	@Override
-	public void delete(Integer id) {
-		documentsDatabase.delete(id);
-		graphProvider.delete(id);
-	}
-
-	@Override
 	public void reset() {
-		graphProvider.reset();
-		documentsDatabase.reset();
-		graphsDatabase.reset();
+		pagesDatabase.reset();
+		usersDatabase.reset();
 	}
 
-	public void loadPersistedData() {
-		loadGraphFromDatabase();
+	// PROVIDER CONFIGURATION ===========================================================
+
+	private static final MongoDBConfig getPagesDatabaseConfiguration() {
+		return new MongoDBConfig("localhost", 27017, "crawler", "pages");
 	}
-
-	public void processAndStoreData() {
-		System.out.println("NOTICE: Indexing and persisting documents...");
-		saveGraphToDatabase();
-	}
-
-	// PRIVATE HELPERS
-	// ================================================================
-	private final void saveGraphToDatabase() {
-		String serializedGraph;
-
-		try {
-			serializedGraph = graphProvider.toGraphViz();
-
-		} catch (ExportException e) {
-			e.printStackTrace();
-			System.err.println("Could not save graph data.");
-
-			return;
-		}
-
-		SaveableGraph saveableGraph = new SaveableGraph(GRAPH_DB_ID, serializedGraph);
-
-		graphsDatabase.upsert(saveableGraph);
-	}
-
-	private final void loadGraphFromDatabase() {
-		Optional<SaveableGraph> savedGraph = graphsDatabase.find(GRAPH_DB_ID);
-
-		if (savedGraph.isEmpty()) {
-			return;
-		}
-
-		String serializedData = savedGraph.get().getSerializedData();
-		graphProvider.setDataUsingGraphViz(serializedData);
-	}
-
-	// PROVIDER CONFIGURATION
-	// ===========================================================
-
-	private static final MongoDBConfig getDocumentsDatabaseConfig() {
-		return new MongoDBConfig("localhost", 27017, "crawler", "documents");
-	}
-
-	private static final MongoDBConfig getGraphsDatabaseConfig() {
-		return new MongoDBConfig("localhost", 27017, "crawler", "graphs");
+	
+	private static final MongoDBConfig getUsersDatabaseConfiguration() {
+		return new MongoDBConfig("localhost", 27017, "crawler", "users");
 	}
 }

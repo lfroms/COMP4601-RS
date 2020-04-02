@@ -7,7 +7,5 @@ public interface JSONSerializable {
 	 * 
 	 * @return A JSON representation
 	 */
-	public JSONObject toJSON();
-	
-	public static final String TYPE_FIELD = "type";
+	public JSONObject toJSON();	
 }
