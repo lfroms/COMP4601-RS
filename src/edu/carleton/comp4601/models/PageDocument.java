@@ -17,7 +17,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 public final class PageDocument extends WebDocument implements Identifiable {
 	private List<String> paragraphs;
 	private List<String> userIds;
-	private String genre;
+	private String genre = null;
 
 	private static DataCoordinator dataCoordinator = DataCoordinator.getInstance();
 	
@@ -37,7 +37,10 @@ public final class PageDocument extends WebDocument implements Identifiable {
 
 		this.paragraphs = parseJSONStringArray(object, Fields.PARAGRAPHS);
 		this.userIds = parseJSONStringArray(object, Fields.USER_IDS);
-		this.genre = object.getString(Fields.GENRE);
+		
+		if (object.has(Fields.GENRE)) {
+			this.genre = object.getString(Fields.GENRE);
+		}
 	}
 
 	@Override
