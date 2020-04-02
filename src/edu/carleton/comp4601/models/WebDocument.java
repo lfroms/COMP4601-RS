@@ -40,10 +40,6 @@ public abstract class WebDocument implements Identifiable, Locatable, JSONSerial
 		return id;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
 	public WebURL getURL() {
 		return url;
 	}
