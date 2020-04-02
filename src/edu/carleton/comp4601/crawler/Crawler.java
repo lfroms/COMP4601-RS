@@ -1,11 +1,9 @@
 package edu.carleton.comp4601.crawler;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 
-import edu.carleton.comp4601.models.EntryDocument;
 import edu.carleton.comp4601.models.PageDocument;
 import edu.carleton.comp4601.models.UserDocument;
 import edu.carleton.comp4601.store.DataCoordinator;
