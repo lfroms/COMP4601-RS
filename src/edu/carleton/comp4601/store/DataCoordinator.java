@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import edu.carleton.comp4601.analyzers.GenrePreprocessor;
+import edu.carleton.comp4601.models.EntryDocument;
 import edu.carleton.comp4601.models.PageDocument;
 import edu.carleton.comp4601.models.UserDocument;
 import edu.carleton.comp4601.store.mongo.MongoDBConfig;
@@ -24,6 +25,9 @@ public final class DataCoordinator {
 
 	private static MongoProvider<PageDocument> pagesDatabase =
 			new MongoProvider<>(getPagesDatabaseConfiguration());
+
+	private static MongoProvider<EntryDocument> entriesDatabase =
+			new MongoProvider<>(getEntriesDatabaseConfiguration());
 	
 	private static MongoProvider<UserDocument> usersDatabase =
 			new MongoProvider<>(getUsersDatabaseConfiguration());
@@ -43,6 +47,10 @@ public final class DataCoordinator {
 	public void upsert(PageDocument page) {
 		pagesDatabase.upsert(page);
 	}
+	
+	public void upsert(EntryDocument entry) {
+		entriesDatabase.upsert(entry);
+	}
 
 	public Optional<PageDocument> findPage(String id) {
 		return pagesDatabase.find(id, PageDocument.class);
@@ -50,6 +58,10 @@ public final class DataCoordinator {
 	
 	public Optional<UserDocument> findUser(String id) {
 		return usersDatabase.find(id, UserDocument.class);
+	}
+	
+	public Optional<EntryDocument> findEntry(String userId, String pageId) {
+		return entriesDatabase.find(userId + pageId, EntryDocument.class);
 	}
 	
 	public List<PageDocument> getAllPages() {
@@ -61,22 +73,51 @@ public final class DataCoordinator {
 	}
 
 	public void deletePage(String id) {
+		Optional<PageDocument> page = findPage(id);
+
 		pagesDatabase.delete(id);
+		
+		if (page.isEmpty()) {
+			return;
+		}
+		
+		page.get().getUsers().forEach(aPage -> {
+			entriesDatabase.delete(aPage.getId() + id);
+		});
 	}
 	
 	public void deleteUser(String id) {
+		Optional<UserDocument> user = findUser(id);
+
 		usersDatabase.delete(id);
+		
+		if (user.isEmpty()) {
+			return;
+		}
+		
+		user.get().getPages().forEach(aUser -> {
+			entriesDatabase.delete(aUser.getId() + id);
+		});
+	}
+	
+	public void deleteEntry(String userId, String pageId) {
+		entriesDatabase.delete(userId + pageId);
 	}
 
 	public void reset() {
 		pagesDatabase.reset();
 		usersDatabase.reset();
+		entriesDatabase.reset();
 	}
 
 	// PROVIDER CONFIGURATION ===========================================================
 
 	private static final MongoDBConfig getPagesDatabaseConfiguration() {
 		return new MongoDBConfig("localhost", 27017, "crawler", "pages");
+	}
+
+	private static final MongoDBConfig getEntriesDatabaseConfiguration() {
+		return new MongoDBConfig("localhost", 27017, "crawler", "entries");
 	}
 	
 	private static final MongoDBConfig getUsersDatabaseConfiguration() {

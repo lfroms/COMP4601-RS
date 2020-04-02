@@ -1,6 +1,7 @@
 package edu.carleton.comp4601.models;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import edu.carleton.comp4601.store.DataCoordinator;
@@ -67,7 +69,7 @@ public final class PageDocument extends WebDocument implements Identifiable {
 	}
 	
 	private static List<String> getUserIdsFromDocument(Document document) {
-		Elements linkElements = document.select("a[href*=users]");
+		Elements linkElements = document.select("a[href]").not("[href*=http]");
 		return linkElements.eachText().stream().map(text -> text.toUpperCase().trim()).collect(Collectors.toList());
 	}
 
@@ -86,6 +88,10 @@ public final class PageDocument extends WebDocument implements Identifiable {
 	public String getContent() {
 		return String.join(" ", paragraphs).strip();
 	}
+	
+	public List<String> getParagraphs() {
+		return paragraphs;
+	}
 
 	public List<String> getUserIds() {
 		return userIds;
@@ -103,6 +109,32 @@ public final class PageDocument extends WebDocument implements Identifiable {
 		});
 		
 		return collection;
+	}
+	
+	public List<EntryDocument> getEntries(Document document) {
+		Elements htmlElements = document.body().children();
+		Iterator<Element> it = htmlElements.iterator();
+		
+		List<EntryDocument> entries = new ArrayList<>();
+
+		while (it.hasNext()) {
+			Element userLink = it.next();
+			assert userLink.tag().getName().equalsIgnoreCase("a");
+			Element temp = it.next();
+			assert temp.tag().getName().equalsIgnoreCase("br");
+			StringBuilder reviewTextBuilder = new StringBuilder();
+			Element paragraph = null;
+			
+			do {
+				paragraph = it.next();
+
+				reviewTextBuilder.append(paragraph.text()).append("\n\n");
+			} while (it.hasNext() && paragraph.tag().getName().equals("p"));
+			
+			entries.add(new EntryDocument(userLink.text(), super.getId(), reviewTextBuilder.toString()));
+		}
+
+		return entries;
 	}
 	
 	public String getGenre() {

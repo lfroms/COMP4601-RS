@@ -1,7 +1,11 @@
 package edu.carleton.comp4601.crawler;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
+import org.jsoup.Jsoup;
+
+import edu.carleton.comp4601.models.EntryDocument;
 import edu.carleton.comp4601.models.PageDocument;
 import edu.carleton.comp4601.models.UserDocument;
 import edu.carleton.comp4601.store.DataCoordinator;
@@ -55,6 +59,10 @@ final class Crawler extends WebCrawler {
 		PageDocument pageDocument = new PageDocument(webUrl, htmlParseData.getHtml());
 		
 		dataCoordinator.upsert(pageDocument);
+		
+		pageDocument.getEntries(Jsoup.parse(htmlParseData.getHtml())).forEach(entry -> {
+			dataCoordinator.upsert(entry);
+		});
 	}
 	
 	private void handleUser(Page page) {
