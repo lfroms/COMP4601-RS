@@ -4,7 +4,6 @@ import java.util.regex.Pattern;
 
 import edu.carleton.comp4601.models.PageDocument;
 import edu.carleton.comp4601.models.UserDocument;
-import edu.carleton.comp4601.models.WebDocument;
 import edu.carleton.comp4601.store.DataCoordinator;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
@@ -53,7 +52,7 @@ final class Crawler extends WebCrawler {
 		}
 		
 		WebURL webUrl = page.getWebURL();
-		WebDocument pageDocument = new PageDocument(webUrl.getDocid(), webUrl, htmlParseData.getHtml());
+		PageDocument pageDocument = new PageDocument(webUrl, htmlParseData.getHtml());
 		
 		dataCoordinator.upsert(pageDocument);
 	}
@@ -66,7 +65,7 @@ final class Crawler extends WebCrawler {
 		}
 		
 		WebURL webUrl = page.getWebURL();
-		WebDocument pageDocument = new UserDocument(webUrl.getDocid(), webUrl, htmlParseData.getHtml());
+		UserDocument pageDocument = new UserDocument(webUrl, htmlParseData.getHtml());
 		
 		dataCoordinator.upsert(pageDocument);
 	}

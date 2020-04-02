@@ -21,8 +21,8 @@ public final class PageDocument extends WebDocument implements Identifiable {
 
 	private static DataCoordinator dataCoordinator = DataCoordinator.getInstance();
 	
-	public PageDocument(String id, WebURL url, String htmlParseDataText) {
-		super(id, getTitleFromDocument(Jsoup.parse(htmlParseDataText)), url);
+	public PageDocument(WebURL url, String htmlParseDataText) {
+		super(getTitleFromDocument(Jsoup.parse(htmlParseDataText)), getTitleFromDocument(Jsoup.parse(htmlParseDataText)), url);
 
 		Document doc = Jsoup.parse(htmlParseDataText);
 
