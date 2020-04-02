@@ -2,6 +2,7 @@ package edu.carleton.comp4601.crawler;
 
 import java.io.File;
 
+import edu.carleton.comp4601.store.DataCoordinator;
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
@@ -12,6 +13,8 @@ final class CrawlerController {
 	private static final int NUM_CRAWLERS = 7;
 	private static final String STORAGE_PATH = new File(System.getProperty("user.home"), "/Desktop/crawler.nosync")
 			.toString();
+	
+	private static DataCoordinator dataCoordinator = DataCoordinator.getInstance();
 
 	public static void main(String[] args) throws Exception {
 		CrawlConfig config = getCrawlConfig();
@@ -27,6 +30,7 @@ final class CrawlerController {
 		CrawlController.WebCrawlerFactory<Crawler> factory = Crawler::new;
 		controller.start(factory, NUM_CRAWLERS);
 
+		dataCoordinator.preprocess();
 	}
 
 	private static CrawlConfig getCrawlConfig() {

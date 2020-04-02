@@ -29,6 +29,11 @@ public final class DataCoordinator {
 
 	// PUBLIC INTERFACE =================================================================
 
+	public void preprocess() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	public void upsert(UserDocument user) {
 		usersDatabase.upsert(user);
 	}

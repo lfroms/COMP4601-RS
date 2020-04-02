@@ -16,6 +16,12 @@ public class ContextualAdvertisingSystem {
 		return NAME;
 	}
 	
+	@Path("crawl")
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	public String crawlProcessor() {
+		return "crawl";
+	}
 	
 	@Path("context")
 	@GET
