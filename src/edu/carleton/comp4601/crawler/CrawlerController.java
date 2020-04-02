@@ -32,7 +32,7 @@ final class CrawlerController {
 	private static CrawlConfig getCrawlConfig() {
 		CrawlConfig config = new CrawlConfig();
 		config.setCrawlStorageFolder(STORAGE_PATH);
-		config.setPolitenessDelay(0);
+		config.setPolitenessDelay(10);
 		config.setIncludeHttpsPages(true);
 		config.setIncludeBinaryContentInCrawling(false);
 		config.setMaxDownloadSize(1_000_000_000);

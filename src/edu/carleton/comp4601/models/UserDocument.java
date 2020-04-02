@@ -20,7 +20,7 @@ public final class UserDocument extends WebDocument implements Identifiable {
 	private static DataCoordinator dataCoordinator = DataCoordinator.getInstance();
 
 	public UserDocument(WebURL url, String htmlParseDataText) {
-		super(getTitleFromDocument(Jsoup.parse(htmlParseDataText)), getTitleFromDocument(Jsoup.parse(htmlParseDataText)), url);
+		super(getTitleFromDocument(Jsoup.parse(htmlParseDataText)), url);
 
 		Document doc = Jsoup.parse(htmlParseDataText);
 

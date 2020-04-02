@@ -6,12 +6,10 @@ import edu.uci.ics.crawler4j.url.WebURL;
 
 public abstract class WebDocument implements Identifiable, Locatable, JSONSerializable {
 	private final String id;
-	private final String title;
 	private final WebURL url;
 
-	public WebDocument(String id, String title, WebURL url) {
+	public WebDocument(String id, WebURL url) {
 		this.id = id;
-		this.title = title;
 		this.url = url;
 	}
 
@@ -23,7 +21,6 @@ public abstract class WebDocument implements Identifiable, Locatable, JSONSerial
 		newUrl.setDocid(object.getInt(Fields.ID));
 
 		this.id = object.getString(Fields.ID);
-		this.title = object.getString(Fields.TITLE);
 		this.url = newUrl;
 	}
 
@@ -32,7 +29,6 @@ public abstract class WebDocument implements Identifiable, Locatable, JSONSerial
 		
 		object
 			.put(Fields.ID, id)
-			.put(Fields.TITLE, title)
 			.put(Fields.URL, url);
 		
 		return object;
@@ -56,7 +52,6 @@ public abstract class WebDocument implements Identifiable, Locatable, JSONSerial
 
 	private static class Fields {
 		public static final String ID = "id";
-		public static final String TITLE = "title";
 		public static final String URL = "url";
 	}
 }
