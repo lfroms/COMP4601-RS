@@ -34,6 +34,9 @@ final class CrawlerController {
 
 		System.out.println("NOTICE: Running preprocessor for GENRES...");
 		dataCoordinator.preprocess();
+		System.out.println("NOTICE: Finished running GENRES preprocessor.");
+		
+		System.out.println("Finished loading data.");
 	}
 
 	private static CrawlConfig getCrawlConfig() {

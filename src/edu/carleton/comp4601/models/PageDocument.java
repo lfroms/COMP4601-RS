@@ -37,6 +37,7 @@ public final class PageDocument extends WebDocument implements Identifiable {
 
 		this.paragraphs = parseJSONStringArray(object, Fields.PARAGRAPHS);
 		this.userIds = parseJSONStringArray(object, Fields.USER_IDS);
+		this.genre = object.getString(Fields.GENRE);
 	}
 
 	@Override
@@ -45,6 +46,7 @@ public final class PageDocument extends WebDocument implements Identifiable {
 
 		object
 			.put(Fields.PARAGRAPHS, paragraphs)
+			.put(Fields.GENRE, genre)
 			.put(Fields.USER_IDS, userIds);
 
 		return object;
@@ -114,6 +116,7 @@ public final class PageDocument extends WebDocument implements Identifiable {
 
 	private static class Fields {
 		public static final String PARAGRAPHS = "paragraphs";
+		public static final String GENRE = "genre";
 		public static final String USER_IDS = "user_ids";
 	}
 }

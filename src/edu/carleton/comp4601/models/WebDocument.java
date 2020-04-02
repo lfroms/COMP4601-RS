@@ -18,7 +18,6 @@ public abstract class WebDocument implements Identifiable, Locatable, JSONSerial
 	public WebDocument(JSONObject object) {
 		WebURL newUrl = new WebURL();
 		newUrl.setURL(object.getString(Fields.URL));
-		newUrl.setDocid(object.getInt(Fields.ID));
 
 		this.id = object.getString(Fields.ID);
 		this.url = newUrl;
