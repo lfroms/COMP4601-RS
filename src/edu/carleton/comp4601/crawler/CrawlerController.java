@@ -17,6 +17,8 @@ final class CrawlerController {
 	private static DataCoordinator dataCoordinator = DataCoordinator.getInstance();
 
 	public static void main(String[] args) throws Exception {
+		dataCoordinator.reset();
+		
 		CrawlConfig config = getCrawlConfig();
 
 		PageFetcher pageFetcher = new PageFetcher(config);
@@ -30,6 +32,7 @@ final class CrawlerController {
 		CrawlController.WebCrawlerFactory<Crawler> factory = Crawler::new;
 		controller.start(factory, NUM_CRAWLERS);
 
+		System.out.println("NOTICE: Running preprocessor for GENRES...");
 		dataCoordinator.preprocess();
 	}
 

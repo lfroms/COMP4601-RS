@@ -72,7 +72,7 @@ public final class MongoProvider<DocumentType extends Identifiable & JSONSeriali
 			try {
 				output.add(clazz.getDeclaredConstructor(JSONObject.class).newInstance(new JSONObject(obj.toJson())));
 			} catch (Exception e) {
-				System.err.println("Could not deserialize document with id " + obj.getInteger(SYSTEM_ID_FIELD) + ". Skipping...");
+				System.err.println("Could not deserialize document with id " + obj.getString(SYSTEM_ID_FIELD) + ". Skipping...");
 				e.printStackTrace();
 			}
 		}

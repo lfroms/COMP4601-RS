@@ -62,7 +62,7 @@ public final class PageDocument extends WebDocument implements Identifiable {
 	}
 	
 	private static List<String> getUserIdsFromDocument(Document document) {
-		Elements linkElements = document.select("a[href*='users'");
+		Elements linkElements = document.select("a[href*=users]");
 		return linkElements.eachText().stream().map(text -> text.toUpperCase().trim()).collect(Collectors.toList());
 	}
 

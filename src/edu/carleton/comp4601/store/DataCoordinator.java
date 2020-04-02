@@ -1,7 +1,9 @@
 package edu.carleton.comp4601.store;
 
+import java.util.List;
 import java.util.Optional;
 
+import edu.carleton.comp4601.analyzers.GenrePreprocessor;
 import edu.carleton.comp4601.models.PageDocument;
 import edu.carleton.comp4601.models.UserDocument;
 import edu.carleton.comp4601.store.mongo.MongoDBConfig;
@@ -30,8 +32,8 @@ public final class DataCoordinator {
 	// PUBLIC INTERFACE =================================================================
 
 	public void preprocess() {
-		// TODO Auto-generated method stub
-		
+		GenrePreprocessor genrePreprocessor = new GenrePreprocessor();
+		genrePreprocessor.run();
 	}
 	
 	public void upsert(UserDocument user) {
@@ -48,6 +50,14 @@ public final class DataCoordinator {
 	
 	public Optional<UserDocument> findUser(String id) {
 		return usersDatabase.find(id, UserDocument.class);
+	}
+	
+	public List<PageDocument> getAllPages() {
+		return pagesDatabase.getAll(PageDocument.class);
+	}
+	
+	public List<UserDocument> getAllUsers() {
+		return usersDatabase.getAll(UserDocument.class);
 	}
 
 	public void deletePage(String id) {
