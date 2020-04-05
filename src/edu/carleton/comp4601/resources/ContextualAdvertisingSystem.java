@@ -134,8 +134,13 @@ public class ContextualAdvertisingSystem {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public String advertisingCategoryProcessor(@PathParam("category") String category) {
-		// TODO: - Get proper pages.
-		List<PageDocument> pagesToAdvertise = dataCoordinator.getPagesByCommunity(category).subList(0, 5);
+		List<PageDocument> pages = dataCoordinator.getPagesByCommunity(category);
+		
+		if (pages.size() == 0) {
+			pages = dataCoordinator.getAllPages();
+		}
+		
+		List<PageDocument> pagesToAdvertise = pages.subList(0, Math.min(5, pages.size()));
 		
 		String output = "";
 		output += "<h2>You may also like:</h2>";
