@@ -27,13 +27,13 @@ public final class SentimentPostprocessor {
 		private static final long serialVersionUID = 534854541168162469L;
 
 	{
-		addAll(Arrays.asList(SentimentTrainingData.POSITIVE.split(" ")));
+		addAll(Arrays.asList(SentimentTrainingData.POSITIVE.toLowerCase().split(" ")));
 	}};
 	
 	private final List<String> negativeReviewWords = new ArrayList<>() {
 		private static final long serialVersionUID = 3285357761576797974L;
 	{
-		addAll(Arrays.asList(SentimentTrainingData.NEGATIVE.split(" ")));
+		addAll(Arrays.asList(SentimentTrainingData.NEGATIVE.toLowerCase().split(" ")));
 	}};
 	
 	
@@ -152,7 +152,7 @@ public final class SentimentPostprocessor {
 		Double positiveScore = 1.0;
 		Double negativeScore = 1.0;
 				
-		for (String word : StringCleaner.stripExtraWhitespace(entry.getText()).split(" ")) {
+		for (String word : StringCleaner.stripExtraWhitespace(entry.getText().toLowerCase()).split(" ")) {
 			if (positiveWordFrequencyBank.containsKey(word)) {
 				positiveScore *= scoreForWord(positiveWordFrequencyBank, word);
 			}

@@ -59,13 +59,16 @@ public class ContextualAdvertisingSystem {
 		String output = "";
 		output += "<table>";
 		output += "<tr>";
-		output += "<th>Name</th><th># of reviews</th>";
+		output += "<th>Name</th><th>Preferred Genre</th><th># of reviews</th>";
 		output += "</tr>";
 		
 		for (UserDocument user : dataCoordinator.getAllUsers()) {
 			output += "<tr>";
 			output += "<td>";
 			output += user.getId();
+			output += "</td>";
+			output += "<td>";
+			output += user.getCommunity().orElse("Undetermined");
 			output += "</td>";
 			output += "<td>";
 			output += user.getPageIds().toArray().length;
