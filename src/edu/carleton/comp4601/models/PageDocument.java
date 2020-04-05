@@ -20,6 +20,7 @@ public final class PageDocument extends WebDocument implements Identifiable {
 	private List<String> paragraphs;
 	private List<String> userIds;
 	private String genre = null;
+	private String secondGenre = null;
 
 	private static DataCoordinator dataCoordinator = DataCoordinator.getInstance();
 	
@@ -43,6 +44,10 @@ public final class PageDocument extends WebDocument implements Identifiable {
 		if (object.has(Fields.GENRE)) {
 			this.genre = object.getString(Fields.GENRE);
 		}
+
+		if (object.has(Fields.SECOND_GENRE)) {
+			this.secondGenre = object.getString(Fields.SECOND_GENRE);
+		}
 	}
 
 	@Override
@@ -52,6 +57,7 @@ public final class PageDocument extends WebDocument implements Identifiable {
 		object
 			.put(Fields.PARAGRAPHS, paragraphs)
 			.put(Fields.GENRE, genre)
+			.put(Fields.SECOND_GENRE, secondGenre)
 			.put(Fields.USER_IDS, userIds);
 
 		return object;
@@ -146,12 +152,17 @@ public final class PageDocument extends WebDocument implements Identifiable {
 	public void setGenre(String genre) {
 		this.genre = genre;
 	}
+	
+	public void setSecondGenre(String secondGenre) {
+		this.secondGenre = secondGenre;
+	}
 
 	// FIELD NAMES ======================================================================
 
 	private static class Fields {
 		public static final String PARAGRAPHS = "paragraphs";
 		public static final String GENRE = "genre";
+		public static final String SECOND_GENRE = "second_genre";
 		public static final String USER_IDS = "user_ids";
 	}
 }
