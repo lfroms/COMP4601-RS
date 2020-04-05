@@ -163,7 +163,7 @@ public final class PageDocument extends WebDocument implements Identifiable {
 
 	// FIELD NAMES ======================================================================
 
-	private static class Fields {
+	public static class Fields {
 		public static final String PARAGRAPHS = "paragraphs";
 		public static final String GENRE = "genre";
 		public static final String SECOND_GENRE = "second_genre";

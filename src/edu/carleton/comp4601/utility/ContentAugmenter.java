@@ -3,6 +3,7 @@ package edu.carleton.comp4601.utility;
 import java.util.Optional;
 
 import edu.carleton.comp4601.models.PageDocument;
+import edu.carleton.comp4601.models.UserDocument;
 import edu.carleton.comp4601.store.DataCoordinator;
 
 public final class ContentAugmenter {
@@ -15,8 +16,13 @@ public final class ContentAugmenter {
 			return "Page not found.";
 		}
 		
-		// TODO: - Get preferred genre.
-		String advertisingCategory = "comedy";
+		String advertisingCategory = "none";
+		
+		Optional<UserDocument> user = dataCoordinator.findUser(userId);
+		
+		if (user.isPresent()) {
+			advertisingCategory = user.get().getCommunity().orElse("none");
+		}
 		
 		String output = "";
 		output += "<frameset cols=\"*,25%\">";

@@ -39,10 +39,10 @@ public class ContextualAdvertisingSystem {
 			System.err.println("ERROR: An error occurred while crawling the data.");
 			e.printStackTrace();
 			
-			return "An error occurred while crawling. See console stacktrace.";
+			return HTMLFrameGenerator.wrapInHTMLFrame("Crawl Error", "An error occurred while crawling. See console stacktrace.");
 		}
 		
-		return "Crawl completed.";
+		return HTMLFrameGenerator.wrapInHTMLFrame("Crawl", "Crawl completed.");
 	}
 	
 	@Path("context")
@@ -135,13 +135,13 @@ public class ContextualAdvertisingSystem {
 	@Produces(MediaType.TEXT_HTML)
 	public String advertisingCategoryProcessor(@PathParam("category") String category) {
 		// TODO: - Get proper pages.
-		List<PageDocument> pagesToAdvertise = dataCoordinator.getAllPages().subList(0, 2);
+		List<PageDocument> pagesToAdvertise = dataCoordinator.getPagesByCommunity(category).subList(0, 5);
 		
 		String output = "";
 		output += "<h2>You may also like:</h2>";
 		output += "<table>";
 		output += "<tr>";
-		output += "<th>Page Name</th><th># of reviews</th>";
+		output += "<th>Name</th><th>Genre</th><th># of reviews</th>";
 		output += "</tr>";
 		
 		for (PageDocument page : pagesToAdvertise) {
@@ -150,6 +150,9 @@ public class ContextualAdvertisingSystem {
 			output += "<a href=\"" + page.getURL().getURL() + "\" target='_blank'>";
 			output += page.getId();
 			output += "</a>";
+			output += "</td>";
+			output += "<td>";
+			output += page.getGenre();
 			output += "</td>";
 			output += "<td>";
 			output += page.getUserIds().toArray().length;
