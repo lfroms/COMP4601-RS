@@ -11,6 +11,8 @@ public final class HTMLFrameGenerator {
 		output += title;
 		
 		output += "</title>";
+		output += "<style> table, th, td { border: 1px solid black; border-collapse: collapse; } th, td { padding: 6px; } </style>";
+		
 		output += "</head>";
 		
 		output += "<body>";

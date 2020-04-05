@@ -88,7 +88,7 @@ public class ContextualAdvertisingSystem {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public String communityProcessor() {
-		if (SentimentPostprocessor.lastRunId == 0) {
+		if (SentimentPostprocessor.lastRunId != GenrePreprocessor.lastRunId) {
 			return "Error: Failed to display communities as the user profiles have not been generated.";
 		}
 		
@@ -120,7 +120,7 @@ public class ContextualAdvertisingSystem {
 		
 		output += "</table>";
 		
-		return output;
+		return HTMLFrameGenerator.wrapInHTMLFrame("Community", output);
 	}
 	
 	@Path("fetch/{user}/{page}")
