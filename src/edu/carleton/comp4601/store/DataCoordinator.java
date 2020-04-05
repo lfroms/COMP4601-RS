@@ -68,6 +68,10 @@ public final class DataCoordinator {
 		return pagesDatabase.getAll(PageDocument.class);
 	}
 	
+	public List<EntryDocument> getAllEntries() {
+		return entriesDatabase.getAll(EntryDocument.class);
+	}
+	
 	public List<UserDocument> getAllUsers() {
 		return usersDatabase.getAll(UserDocument.class);
 	}

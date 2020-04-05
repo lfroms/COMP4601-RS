@@ -97,14 +97,8 @@ public final class GenrePreprocessor {
 
 	// PRIVATE HELPERS ==================================================================
 	
-	private HashMap<String, Integer> calculateGenresForPage(PageDocument page) {
-		String textWithRemovedStopwords = page.getContent();
-		
-		for (String stopWord: StopWords.all) {
-			textWithRemovedStopwords.replaceAll("(?i)" + stopWord, " ");
-		}
-		
-		String[] inputText = textWithRemovedStopwords.trim().replaceAll(" +", " ").split(" ");
+	private HashMap<String, Integer> calculateGenresForPage(PageDocument page) {		
+		String[] inputText = StopWords.removeFromString(page.getContent()).split(" ");
 		
 		HashMap<String, Integer> scores = new HashMap<>() {
 			private static final long serialVersionUID = 1L;

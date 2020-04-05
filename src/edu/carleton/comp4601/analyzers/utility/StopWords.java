@@ -13,4 +13,14 @@ public final class StopWords {
 			add(stopword);
 		}
 	}};
+	
+	public static String removeFromString(String input) {
+		String output = input;
+		
+		for (String stopWord: all) {
+			output.replaceAll("(?i)" + stopWord, " ");
+		}
+		
+		return StringCleaner.stripExtraWhitespace(output);
+	}
 }
