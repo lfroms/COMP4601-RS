@@ -1,5 +1,6 @@
 package edu.carleton.comp4601.analyzers.utility;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +18,7 @@ public final class StopWords {
 	}};
 	
 	public static String removeFromString(String input) {
-		List<String> words = Arrays.asList(StringCleaner.stripExtraWhitespace(input).split(" "));
+		List<String> words = new ArrayList<String>(Arrays.asList(StringCleaner.stripExtraWhitespace(input).split(" ")));
 		
 		words.removeAll(all);
 		
