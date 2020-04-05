@@ -174,7 +174,7 @@ public final class SentimentPostprocessor {
 	}
 	
 	private Double scoreForWord(Map<String, Integer> bank, String word) {
-		return (bank.get(word).doubleValue() + 1) / (allWords.size() + getSum(positiveWordFrequencyBank));
+		return (bank.get(word).doubleValue() + 1) / (allWords.size() + getSum(bank));
 	}
 	
 	private static Integer getSum(final Map<String, Integer> data) { 
