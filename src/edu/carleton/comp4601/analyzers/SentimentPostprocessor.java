@@ -152,7 +152,9 @@ public final class SentimentPostprocessor {
 		Double positiveScore = 1.0;
 		Double negativeScore = 1.0;
 				
-		for (String word : StringCleaner.stripExtraWhitespace(entry.getText().toLowerCase()).split(" ")) {
+		String sanitizedText = entry.getText().toLowerCase().replaceAll("\\p{P}", "");
+		
+		for (String word : StringCleaner.stripExtraWhitespace(sanitizedText).split(" ")) {
 			if (positiveWordFrequencyBank.containsKey(word)) {
 				positiveScore *= scoreForWord(positiveWordFrequencyBank, word);
 			}

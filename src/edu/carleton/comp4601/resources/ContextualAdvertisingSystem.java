@@ -68,7 +68,7 @@ public class ContextualAdvertisingSystem {
 			output += user.getId();
 			output += "</td>";
 			output += "<td>";
-			output += user.getCommunity().orElse("Undetermined");
+			output += user.getCommunity().orElse("none");
 			output += "</td>";
 			output += "<td>";
 			output += user.getPageIds().toArray().length;
