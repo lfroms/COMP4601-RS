@@ -68,6 +68,10 @@ public final class DataCoordinator {
 		return entriesDatabase.find(EntryDocument.Fields.USER_ID, userId, EntryDocument.class);
 	}
 	
+	public List<UserDocument> getUsersByCommunity(String community) {
+		return usersDatabase.find(UserDocument.Fields.COMMUNITY, community, UserDocument.class);
+	}
+	
 	public List<PageDocument> getAllPages() {
 		return pagesDatabase.getAll(PageDocument.class);
 	}

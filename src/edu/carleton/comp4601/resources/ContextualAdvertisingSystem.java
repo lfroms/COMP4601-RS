@@ -8,6 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import edu.carleton.comp4601.analyzers.GenrePreprocessor;
 import edu.carleton.comp4601.analyzers.SentimentPostprocessor;
 import edu.carleton.comp4601.crawler.CrawlerController;
 import edu.carleton.comp4601.models.PageDocument;
@@ -91,7 +92,35 @@ public class ContextualAdvertisingSystem {
 			return "Error: Failed to display communities as the user profiles have not been generated.";
 		}
 		
-		return "Return a table as per requirement 8 of assignment 2";
+		String output = "";
+		output += "<table>";
+		output += "<tr>";
+		output += "<th>Community</th><th>Users</th>";
+		output += "</tr>";
+		
+		for (String genre : GenrePreprocessor.Genre.all) {
+			output += "<tr>";
+			output += "<td>";
+			output += genre;
+			output += "</td>";
+			output += "<td>";
+			
+			List<UserDocument> users = dataCoordinator.getUsersByCommunity(genre);
+			
+			for (UserDocument user : users) {
+				output += "<a href=\"" + user.getURL().getURL() + "\">";
+				output += user.getId();
+				output += "</a>";
+				output += ", ";
+			}
+			
+			output += "</td>";
+			output += "</tr>";
+		}
+		
+		output += "</table>";
+		
+		return output;
 	}
 	
 	@Path("fetch/{user}/{page}")

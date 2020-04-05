@@ -107,7 +107,7 @@ public final class UserDocument extends WebDocument implements Identifiable {
 
 	// FIELD NAMES ======================================================================
 
-	private static class Fields {
+	public static class Fields {
 		public static final String PAGE_IDS = "page_ids";
 		public static final String COMMUNITY = "community";
 	}
