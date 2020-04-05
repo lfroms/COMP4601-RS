@@ -84,7 +84,7 @@ public final class GenrePreprocessor {
 	public void run() {
 		List<PageDocument> pages = dataCoordinator.getAllPages();
 
-		pages.parallelStream().forEach(page -> {
+		pages.forEach(page -> {
 			HashMap<String, Integer> scoresForPage = calculateGenresForPage(page);
 			String highestGenre = getHighestScoringGenre(scoresForPage);
 			String secondHighestGenre = getSecondHighestScoringGenre(scoresForPage, highestGenre);
