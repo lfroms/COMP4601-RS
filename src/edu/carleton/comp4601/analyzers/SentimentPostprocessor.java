@@ -114,13 +114,11 @@ public final class SentimentPostprocessor {
 		List<UserDocument> users = dataCoordinator.getAllUsers();
 		
 		users.parallelStream().forEach(user -> {
-			HashMap<String, Integer> scores = new HashMap<>() {
-				private static final long serialVersionUID = -8099737721310345421L;
-			{
-				Genre.all.parallelStream().forEach(genre -> {
-					put(genre, 0);
-				});
-			}};
+			HashMap<String, Integer> scores = new HashMap<>();
+			
+			Genre.all.parallelStream().forEach(genre -> {
+				scores.put(genre, 0);
+			});
 			
 			List<EntryDocument> entries = user.getEntries();
 						
