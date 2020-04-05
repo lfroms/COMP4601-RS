@@ -17,8 +17,8 @@ public final class StopWords {
 	}};
 	
 	public static String removeFromString(String input) {
-		List<String> words = Arrays.asList(input.split(" "));
+		List<String> words = Arrays.asList(StringCleaner.stripExtraWhitespace(input).split(" "));
 		
-		return StringCleaner.stripExtraWhitespace(String.join(" ", words));
+		return String.join(" ", words);
 	}
 }
