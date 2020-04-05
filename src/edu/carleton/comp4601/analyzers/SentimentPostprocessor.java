@@ -152,7 +152,7 @@ public final class SentimentPostprocessor {
 		Double positiveScore = 1.0;
 		Double negativeScore = 1.0;
 				
-		String sanitizedText = entry.getText().toLowerCase().replaceAll("\\p{P}", "");
+		String sanitizedText = entry.getText().toLowerCase().replaceAll("\\p{Punct}","");
 		
 		for (String word : StringCleaner.stripExtraWhitespace(sanitizedText).split(" ")) {
 			if (positiveWordFrequencyBank.containsKey(word)) {
@@ -176,7 +176,7 @@ public final class SentimentPostprocessor {
 	}
 	
 	private Double scoreForWord(Map<String, Integer> bank, String word) {
-		return (bank.get(word).doubleValue() + 1) / (allWords.size() + getSum(bank));
+		return (bank.get(word).doubleValue() + 1) / getSum(bank);
 	}
 	
 	private static Integer getSum(final Map<String, Integer> data) { 
