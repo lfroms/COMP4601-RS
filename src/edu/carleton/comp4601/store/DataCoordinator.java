@@ -64,6 +64,10 @@ public final class DataCoordinator {
 		return entriesDatabase.find(userId + pageId, EntryDocument.class);
 	}
 	
+	public List<EntryDocument> getUserEntries(String userId) {
+		return entriesDatabase.find(EntryDocument.Fields.USER_ID, userId, EntryDocument.class);
+	}
+	
 	public List<PageDocument> getAllPages() {
 		return pagesDatabase.getAll(PageDocument.class);
 	}

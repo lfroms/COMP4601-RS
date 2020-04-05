@@ -83,7 +83,7 @@ public final class EntryDocument extends StorableDocument implements Identifiabl
 
 	// FIELD NAMES ======================================================================
 
-	private static class Fields {
+	public static class Fields {
 		public static final String USER_ID = "user_id";
 		public static final String PAGE_ID = "page_id";
 		public static final String TEXT = "text";

@@ -147,6 +147,10 @@ public final class PageDocument extends WebDocument implements Identifiable {
 		return genre;
 	}
 	
+	public String getSecondaryGenre() {
+		return secondGenre;
+	}
+	
 	// SETTERS ==========================================================================
 	
 	public void setGenre(String genre) {

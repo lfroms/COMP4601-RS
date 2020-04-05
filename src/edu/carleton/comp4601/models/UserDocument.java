@@ -16,6 +16,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 
 public final class UserDocument extends WebDocument implements Identifiable {
 	private List<String> pageIds;
+	private String community = null;
 	
 	private static DataCoordinator dataCoordinator = DataCoordinator.getInstance();
 
@@ -33,13 +34,17 @@ public final class UserDocument extends WebDocument implements Identifiable {
 		super(object);
 
 		this.pageIds = parseJSONStringArray(object, Fields.PAGE_IDS);
+		
+		if (object.has(Fields.COMMUNITY)) {
+			this.community = object.getString(Fields.COMMUNITY);
+		}
 	}
 
 	@Override
 	public JSONObject toJSON() {
 		JSONObject object = super.toJSON();
 
-		object.put(Fields.PAGE_IDS, pageIds);
+		object.put(Fields.PAGE_IDS, pageIds).put(Fields.COMMUNITY, community);
 
 		return object;
 	}
@@ -85,10 +90,25 @@ public final class UserDocument extends WebDocument implements Identifiable {
 		
 		return collection;
 	}
+	
+	public List<EntryDocument> getEntries() {
+		return dataCoordinator.getUserEntries(getId());
+	}
+	
+	public Optional<String> getCommunity() {
+		return Optional.ofNullable(community);
+	}
+	
+	// SETTERS ==========================================================================
+	
+	public void setCommunity(String community) {
+		this.community = community;
+	}
 
 	// FIELD NAMES ======================================================================
 
 	private static class Fields {
 		public static final String PAGE_IDS = "page_ids";
+		public static final String COMMUNITY = "community";
 	}
 }

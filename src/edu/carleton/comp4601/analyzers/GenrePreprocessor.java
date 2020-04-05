@@ -1,5 +1,6 @@
 package edu.carleton.comp4601.analyzers;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -80,11 +81,15 @@ public final class GenrePreprocessor {
 	
 	
 	private static final DataCoordinator dataCoordinator = DataCoordinator.getInstance();
+	
+	public static int lastRunId = 0;
 
 	public void run() {
 		List<PageDocument> pages = dataCoordinator.getAllPages();
+		
+		lastRunId++;
 
-		pages.forEach(page -> {
+		pages.parallelStream().forEach(page -> {
 			HashMap<String, Integer> scoresForPage = calculateGenresForPage(page);
 			String highestGenre = getHighestScoringGenre(scoresForPage);
 			String secondHighestGenre = getSecondHighestScoringGenre(scoresForPage, highestGenre);
@@ -98,17 +103,17 @@ public final class GenrePreprocessor {
 	// PRIVATE HELPERS ==================================================================
 	
 	private HashMap<String, Integer> calculateGenresForPage(PageDocument page) {		
-		String[] inputText = StopWords.removeFromString(page.getContent()).split(" ");
+		List<String> inputText = Arrays.asList(StopWords.removeFromString(page.getContent()).split(" "));
 		
 		HashMap<String, Integer> scores = new HashMap<>() {
 			private static final long serialVersionUID = 1L;
 		{
-			Genre.all.forEach(genre -> {
+			Genre.all.parallelStream().forEach(genre -> {
 				put(genre, 0);
 			});
 		}};
 		
-		for (String word: inputText) {
+		inputText.parallelStream().forEach(word -> {
 			if (dictionary.containsKey(word)) {
 				String genre = dictionary.get(word);
 				
@@ -117,12 +122,12 @@ public final class GenrePreprocessor {
 				
 				scores.put(genre, newScore);
 			}
-		}
+		});
 		
 		return scores;
 	}
 	
-	private String getHighestScoringGenre(HashMap<String, Integer> scores) {
+	public static String getHighestScoringGenre(HashMap<String, Integer> scores) {
 		return Collections.max(scores.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
 	}
 	

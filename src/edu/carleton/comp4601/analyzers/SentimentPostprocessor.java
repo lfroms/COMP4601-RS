@@ -9,13 +9,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import edu.carleton.comp4601.analyzers.GenrePreprocessor.Genre;
 import edu.carleton.comp4601.analyzers.utility.StopWords;
 import edu.carleton.comp4601.analyzers.utility.StringCleaner;
 import edu.carleton.comp4601.models.EntryDocument;
+import edu.carleton.comp4601.models.UserDocument;
 import edu.carleton.comp4601.store.DataCoordinator;
 
 public final class SentimentPostprocessor {
 	private static final DataCoordinator dataCoordinator = DataCoordinator.getInstance();
+	
+	public static int lastRunId = 0;
 	
 	// TRAINING DATA ====================================================================
 	
@@ -77,6 +81,13 @@ public final class SentimentPostprocessor {
 	// PUBLIC INTERFACE =================================================================
 
 	public void run() {
+		if (GenrePreprocessor.lastRunId == lastRunId) {
+			System.out.println("NOTICE: Not running sentiment analysis as sentiments are in-sync with genres.");
+			return;
+		}
+		
+		lastRunId = GenrePreprocessor.lastRunId;
+		
 		System.out.println("NOTICE: Analyzing review sentiments...");
 		analyzeReviewSentiments();
 		
@@ -89,7 +100,7 @@ public final class SentimentPostprocessor {
 	private void analyzeReviewSentiments() {
 		List<EntryDocument> entries = dataCoordinator.getAllEntries();
 		
-		entries.forEach(entry -> {
+		entries.parallelStream().forEach(entry -> {
 			Optional<Boolean> sentimentIsPositive = sentimentIsPositiveForEntry(entry);
 			
 			if (sentimentIsPositive.isPresent()) {
@@ -100,7 +111,38 @@ public final class SentimentPostprocessor {
 	}
 	
 	private void analyzeUserPreferences() {
+		List<UserDocument> users = dataCoordinator.getAllUsers();
 		
+		users.parallelStream().forEach(user -> {
+			HashMap<String, Integer> scores = new HashMap<>() {
+				private static final long serialVersionUID = -8099737721310345421L;
+			{
+				Genre.all.parallelStream().forEach(genre -> {
+					put(genre, 0);
+				});
+			}};
+			
+			List<EntryDocument> entries = user.getEntries();
+						
+			entries.parallelStream().forEach(entry -> {
+				Optional<Boolean> sentiment = entry.getSentiment();
+				
+				if (sentiment.isPresent() && sentiment.get() == true) {
+					String genre1 = entry.getPage().getGenre();
+					scores.put(genre1, scores.get(genre1) + 1);
+					
+					String genre2 = entry.getPage().getSecondaryGenre();
+					scores.put(genre2, scores.get(genre2) + 1);
+				}
+			});
+			
+			String highestScoringGenre = GenrePreprocessor.getHighestScoringGenre(scores);
+			
+			if (scores.get(highestScoringGenre) != 0) {
+				user.setCommunity(highestScoringGenre);
+				dataCoordinator.upsert(user);
+			}
+		});
 	}
 	
 	

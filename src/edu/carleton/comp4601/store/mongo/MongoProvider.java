@@ -60,6 +60,26 @@ public final class MongoProvider<DocumentType extends Identifiable & JSONSeriali
 		}
 	}
 	
+	public final ArrayList<DocumentType> find(String fieldName, String fieldValue, Class<DocumentType> clazz) {
+		ArrayList<DocumentType> output = new ArrayList<>();
+		
+		FindIterable<Document> cursor = collection.find(new BasicDBObject(fieldName, fieldValue));
+		MongoCursor<Document> c = cursor.iterator();
+		
+		while (c.hasNext()) {
+			Document obj = c.next();
+			
+			try {
+				output.add(clazz.getDeclaredConstructor(JSONObject.class).newInstance(new JSONObject(obj.toJson())));
+			} catch (Exception e) {
+				System.err.println("Could not deserialize document with id " + obj.getString(SYSTEM_ID_FIELD) + ". Skipping...");
+				e.printStackTrace();
+			}
+		}
+		
+		return output;
+	}
+	
 	public final ArrayList<DocumentType> getAll(Class<DocumentType> clazz) {
 		ArrayList<DocumentType> output = new ArrayList<>();
 		
