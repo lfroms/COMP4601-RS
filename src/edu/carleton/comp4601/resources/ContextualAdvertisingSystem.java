@@ -48,8 +48,13 @@ public class ContextualAdvertisingSystem {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public String contextProcessor() {
+		System.out.println("NOTICE: Running postprocessor for SENTIMENTS...");
+
 		SentimentPostprocessor sentimentPostprocessor = new SentimentPostprocessor();
 		sentimentPostprocessor.run();
+		
+		System.out.println("NOTICE: Finished running SENTIMENTS postprocessor.");
+
 		
 		String output = "";
 		output += "<table>";

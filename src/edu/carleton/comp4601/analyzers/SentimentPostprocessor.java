@@ -77,7 +77,11 @@ public final class SentimentPostprocessor {
 	// PUBLIC INTERFACE =================================================================
 
 	public void run() {
+		System.out.println("NOTICE: Analyzing review sentiments...");
 		analyzeReviewSentiments();
+		
+		System.out.println("NOTICE: Analyzing user preferences...");
+		analyzeUserPreferences();	
 	}
 	
 	// ACTIONS ==========================================================================
@@ -93,6 +97,10 @@ public final class SentimentPostprocessor {
 				dataCoordinator.upsert(entry);
 			}
 		});
+	}
+	
+	private void analyzeUserPreferences() {
+		
 	}
 	
 	
