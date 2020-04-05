@@ -1,5 +1,6 @@
 package edu.carleton.comp4601.store;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,7 +78,10 @@ public final class DataCoordinator {
 	}
 	
 	public List<PageDocument> getPagesByCommunity(String community) {
-		return pagesDatabase.find(PageDocument.Fields.GENRE, community, PageDocument.class);
+		List<PageDocument> entries =  pagesDatabase.find(PageDocument.Fields.GENRE, community, PageDocument.class);
+		Collections.sort(entries, new SortByNumberOfReviews());
+		
+		return entries;
 	}
 	
 	public List<EntryDocument> getAllEntries() {

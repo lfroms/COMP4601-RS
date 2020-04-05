@@ -143,7 +143,7 @@ public class ContextualAdvertisingSystem {
 		List<PageDocument> pagesToAdvertise = pages.subList(0, Math.min(5, pages.size()));
 		
 		String output = "";
-		output += "<h2>You may also like:</h2>";
+		output += "<h2>You may also like</h2>";
 		output += "<table>";
 		output += "<tr>";
 		output += "<th>Name</th><th>Genre</th><th># of reviews</th>";
